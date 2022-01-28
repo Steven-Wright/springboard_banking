@@ -2,7 +2,6 @@ import unittest
 import json
 from bank.classes import Account, Employee, Service, Customer, Storage
 
-
 class TestAccount(unittest.TestCase):
     def test_init_properties(self):
         acct = Account("savings", 0.)
@@ -250,7 +249,7 @@ class TestStorage(unittest.TestCase):
         self.assertEqual(storage.path, "test.json")
 
     def test_read_in(self):
-        with open("test_read.json", "w") as file:
+        with open("tests/test_read.json", "w") as file:
             json.dump({
                 "customers": [{
                     "f_name": "James",
@@ -277,7 +276,7 @@ class TestStorage(unittest.TestCase):
             },
                 file)
 
-        storage = Storage("test_read.json")
+        storage = Storage("tests/test_read.json")
         storage.read_in()
         self.assertEqual(len(storage.customers), 1)
         self.assertEqual(storage.customers[0].f_name, "James")
@@ -292,7 +291,7 @@ class TestStorage(unittest.TestCase):
         self.assertEqual(storage.customers[0].services[0].status, "approved")
 
     def test_write_out(self):
-        storage = Storage("test_write.json")
+        storage = Storage("tests/test_write.json")
         acct = Account("checking", 10.)
         service = Service(100, Account("service", 0), "approved")
         cust = Customer("James", "May", "1 Downing Street", [acct], [service])
@@ -302,7 +301,7 @@ class TestStorage(unittest.TestCase):
         storage.globals = {"test": True}
         storage.write_out()
 
-        with open("test_write.json", "r") as file:
+        with open("tests/test_write.json", "r") as file:
             self.assertDictEqual(json.load(file), {
                 "customers": [{
                                  "f_name": "James",
