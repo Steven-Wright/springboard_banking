@@ -175,9 +175,9 @@ class Storage:
         try:
             with open(self.path, 'r') as file:
                 data = json.load(file)
-        except FileNotFoundError:
+        except FileNotFoundError as err:
             logging.warning("File not found at %s", self.path)
-            data = {}
+            raise err
 
         if 'customers' in data.keys():
             self.customers = [Customer.from_dict(entry) for entry in data['customers']]
@@ -198,6 +198,7 @@ class Storage:
                     file)
         except OSError as err:
             logging.critical("Unable to write to disk:%s", err)
+            raise err
 
     def __enter__(self):
         """ trivial magic function for context manager ??? """

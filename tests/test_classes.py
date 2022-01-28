@@ -290,6 +290,9 @@ class TestStorage(unittest.TestCase):
         self.assertEqual(storage.customers[0].services[0].balance, 0)
         self.assertEqual(storage.customers[0].services[0].status, "approved")
 
+        with self.assertRaises(FileNotFoundError):
+            Storage("tests/test_missing_file.json").read_in()
+
     def test_write_out(self):
         storage = Storage("tests/test_write.json")
         acct = Account("checking", 10.)
@@ -327,3 +330,6 @@ class TestStorage(unittest.TestCase):
                 "globals": {"test": True}
             }
             )
+
+        with self.assertRaises(OSError):
+            Storage("/root/test.json").write_out()
