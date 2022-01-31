@@ -141,6 +141,16 @@ class Customer:
         self.accounts = accounts if accounts is not None else []
         self.services = services if services is not None else []
 
+    @property
+    def total_balance(self):
+        """ Return total worth of all accounts and services """
+        if len(self.accounts) > 0 or len(self.services) > 0:
+            accounts_total = sum([acct.balance for acct in self.accounts])
+            services_total = sum([service.balance for service in self.services])
+            return accounts_total + services_total
+        else:
+            return 0
+
     def to_dict(self):
         """ Serialize class instance to dictionary """
         return {

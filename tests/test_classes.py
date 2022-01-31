@@ -206,6 +206,24 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(cust2.services[0].balance, 0)
         self.assertEqual(cust2.services[0].status, "approved")
 
+    def test_total_balance(self):
+        acct = Account("checking", 0)
+        service = Service(100)
+        cust = Customer("Alex", "Trebek", "1 Jeopardy! Ave", [acct], [service])
+        self.assertEqual(cust.total_balance, 0)
+
+        acct = Account("checking", 100)
+        service = Service(100)
+        cust = Customer("Steve", "Harvey", "1 Family Affiars Highway", [acct], [service])
+        self.assertEqual(cust.total_balance, 100)
+
+        acct = Account("checking", 0)
+        service_account = Account("service", -100)
+        service = Service(100, service_account, status="approved")
+        cust = Customer("Pat", "Sajak", "1 Wheel Way", [acct], [service])
+        self.assertEqual(cust.total_balance, -100)
+
+
     def test_to_dict(self):
         acct = Account("checking", 0)
         service = Service(100)
