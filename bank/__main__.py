@@ -1,10 +1,6 @@
 import argparse
 import logging
-from account import Account
-from employee import Employee
-from customer import Customer
-from service import Service
-from storage import Storage
+from . import Account, Employee, Service, Customer, Storage
 
 def list_employees(_):
     """ print list of employees """

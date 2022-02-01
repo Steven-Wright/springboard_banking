@@ -1,4 +1,4 @@
-from account import Account
+from .account import Account
 
 class Service:
     """ Class representing a lending service """
