@@ -63,10 +63,12 @@ def remove_customer(args):
 parser = argparse.ArgumentParser(
     description="simulate a bank, demonstrate OOP design practices")
 command_subparsers = parser.add_subparsers()
+command_subparsers.required = True
 
 # EMPLOYEE SUB COMMAND
 employee_parser = command_subparsers.add_parser('employee')
 employee_subparser = employee_parser.add_subparsers()
+employee_subparser.required = True
 
 employee_list = employee_subparser.add_parser('list')
 employee_list.set_defaults(func=list_employees)
@@ -83,6 +85,7 @@ employee_remove.set_defaults(func=remove_employee)
 # CUSTOMER SUB COMMAND
 customer_parser = command_subparsers.add_parser('customer')
 customer_subparser = customer_parser.add_subparsers()
+customer_subparser.required = True
 
 customer_add = customer_subparser.add_parser("list")
 customer_add.set_defaults(func=list_customers)
