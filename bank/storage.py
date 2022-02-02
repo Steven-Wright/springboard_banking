@@ -1,7 +1,7 @@
 import logging
 import json
-from .customer import Customer
-from .employee import Employee
+from bank.customer import Customer
+from bank.employee import Employee
 
 class Storage:
     """ Class responsible for managing persisent storage """

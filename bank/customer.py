@@ -1,5 +1,5 @@
-from .service import Service
-from .account import Account
+from bank.service import Service
+from bank.account import Account
 
 class Customer:
     """ Encapsulates customer information, accounts and services """

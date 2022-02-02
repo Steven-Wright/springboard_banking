@@ -1,6 +1,6 @@
 import unittest
 import json
-from bank.classes import Account, Employee, Service, Customer, Storage
+from bank import Account, Employee, Service, Customer, Storage
 
 class TestAccount(unittest.TestCase):
     def test_init_properties(self):
