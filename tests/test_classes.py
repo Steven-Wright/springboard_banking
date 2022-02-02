@@ -1,6 +1,6 @@
 import unittest
 import json
-from bank import Account, Employee, Service, Customer, Storage
+from bank import Account, Employee, Service, Customer, Storage, FileUtils
 
 class TestAccount(unittest.TestCase):
     def test_init_properties(self):
@@ -263,8 +263,8 @@ class TestCustomer(unittest.TestCase):
 
 class TestStorage(unittest.TestCase):
     def test_init(self):
-        storage = Storage("test.json")
-        self.assertEqual(storage.path, "test.json")
+        storage = Storage(FileUtils, "test.json")
+        self.assertEqual(storage.utils.path, "test.json")
 
     def test_read_in(self):
         with open("tests/test_read.json", "w") as file:
@@ -294,8 +294,8 @@ class TestStorage(unittest.TestCase):
             },
                 file)
 
-        storage = Storage("tests/test_read.json")
-        storage.read_in()
+        storage = Storage(FileUtils, "tests/test_read.json")
+        storage.load()
         self.assertEqual(len(storage.customers), 1)
         self.assertEqual(storage.customers[0].f_name, "James")
         self.assertEqual(storage.customers[0].l_name, "May")
@@ -309,10 +309,10 @@ class TestStorage(unittest.TestCase):
         self.assertEqual(storage.customers[0].services[0].status, "approved")
 
         with self.assertRaises(FileNotFoundError):
-            Storage("tests/test_missing_file.json").read_in()
+            Storage(FileUtils, "tests/test_missing_file.json").load()
 
     def test_write_out(self):
-        storage = Storage("tests/test_write.json")
+        storage = Storage(FileUtils, "tests/test_write.json")
         acct = Account("checking", 10.)
         service = Service(100, Account("service", 0), "approved")
         cust = Customer("James", "May", "1 Downing Street", [acct], [service])
@@ -320,7 +320,7 @@ class TestStorage(unittest.TestCase):
         storage.customers = [cust]
         storage.employees = [emp]
         storage.globals = {"test": True}
-        storage.write_out()
+        storage.save()
 
         with open("tests/test_write.json", "r") as file:
             self.assertDictEqual(json.load(file), {
@@ -350,4 +350,4 @@ class TestStorage(unittest.TestCase):
             )
 
         with self.assertRaises(OSError):
-            Storage("/root/test.json").write_out()
+            Storage(FileUtils, "/root/test.json").save()
