@@ -1,67 +1,10 @@
 import argparse
-import logging
-from bank import Account, Employee, Service, Customer, Service, Storage, FileUtils
+from bank import Storage, FileUtils
+from bank.main import list_employees, add_employee, remove_employee,  list_customers, add_customer, remove_customer
 
-
-def list_employees(_):
-    """ print list of employees """
-    with Storage(FileUtils, "bank.json") as storage:
-        print("Listing {0} employees".format(len(storage.employees)))
-        for i, emp in enumerate(storage.employees):
-            print("{0}: {1}, {2}".format(i, emp.f_name, emp.l_name))
-
-
-def add_employee(args):
-    """ add new employee """
-    with Storage(FileUtils, "bank.json") as storage:
-        emp = Employee(args.first_name, args.last_name)
-        storage.employees.append(emp)
-
-
-def remove_employee(args):
-    """ remove an employee """
-    with Storage(FileUtils, "bank.json") as storage:
-        try:
-            del storage.employees[args.index]
-        except IndexError:
-            logging.critical(
-                "Could not find an employee with index %s", args.index)
-
-
-def list_customers(_):
-    """ list customers """
-    with Storage(FileUtils, "bank.json") as storage:
-        print("Listing {0} customers".format(len(storage.customers)))
-        for i, cust in enumerate(storage.customers):
-            print("{0}: {1}, {2}, {3}, ${4:.2f}".format(
-                i, cust.f_name, cust.l_name, cust.address, cust.total_balance))
-
-
-def add_customer(args):
-    """ add a new customer """
-    with Storage(FileUtils, "bank.json") as storage:
-        cust = Customer(args.first_name, args.last_name, args.address)
-        storage.customers.append(cust)
-
-
-def remove_customer(args):
-    """ remove a customer """
-    with Storage(FileUtils, "bank.json") as storage:
-        try:
-            total_balance = storage.customers[args.index].total_balance
-        except IndexError:
-            logging.critical(
-                "Could not find a customer with index %s", args.index)
-
-        if total_balance != 0:
-            logging.error("Could not remove customer %s, total balance is $%s, not $0.00",
-                args.index, total_balance)
-        else:
-            del storage.customers[args.index]
-
-
-parser = argparse.ArgumentParser(
-    description="simulate a bank, demonstrate OOP design practices")
+parser = argparse.ArgumentParser()
+parser.description = "simulate a bank, demonstrate OOP design practices"
+parser.add_argument("-f", "--file", default="bank.json", required=False)
 command_subparsers = parser.add_subparsers()
 command_subparsers.required = True
 
@@ -79,7 +22,7 @@ employee_add.add_argument('last_name', type=str)
 employee_add.set_defaults(func=add_employee)
 
 employee_remove = employee_subparser.add_parser('remove')
-employee_remove.add_argument("index", type=int)
+employee_remove.add_argument("employee_index", type=int)
 employee_remove.set_defaults(func=remove_employee)
 
 # CUSTOMER SUB COMMAND
@@ -90,16 +33,28 @@ customer_subparser.required = True
 customer_add = customer_subparser.add_parser("list")
 customer_add.set_defaults(func=list_customers)
 
-customer_add = customer_subparser.add_parser("add")
+customer_add = customer_subparser.add_parser('add')
 customer_add.add_argument("first_name", type=str)
 customer_add.add_argument("last_name", type=str)
 customer_add.add_argument("address", type=str)
 customer_add.set_defaults(func=add_customer)
 
 customer_remove = customer_subparser.add_parser('remove')
-customer_remove.add_argument("index", type=int)
+customer_remove.add_argument("customer_index", type=int)
 customer_remove.set_defaults(func=remove_customer)
 
-arguments = parser.parse_args()
+# CUSTOMER ACCOUNT SUB COMMAND
+customer_account_parser = customer_subparser.add_parser('account')
+customer_account_subparser = customer_account_parser.add_subparsers()
+customer_account_subparser.required = True
 
-arguments.func(arguments)
+customer_account_deposit = customer_account_subparser.add_parser('deposit')
+customer_account_deposit.add_argument("customer_index", type=int)
+customer_account_deposit.add_argument("account_index", type=int)
+customer_account_deposit.add_argument("amount", type=float)
+# customer_account_deposit.set_defaults(func=deposit)
+
+
+arguments = parser.parse_args()
+with Storage(FileUtils, arguments.file) as storage:
+    arguments.func(storage, arguments)
