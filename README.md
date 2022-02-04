@@ -52,3 +52,10 @@ See `Class and Code Path Diagrams.pdf`
 ## Possible Improvements
 1. `bank/__main__.py` and `bank/main.py` could be decoupled, currently functions within the latter file depend on taking args as a parameter
 2. `bank.Storage` could be refactored to handle storage in an atomic fashion implementing methods like `get_customer` rather than providing a `customers` attribute
+
+## Generate documentation
+```
+mkdir doc
+python -m pydoc -w bank bank.{storage,storage.storage,storage.file_utils,account,customer,employee,main,service}
+mv *.html doc/
+```
