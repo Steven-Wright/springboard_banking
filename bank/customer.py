@@ -1,8 +1,10 @@
 from bank.service import Service
 from bank.account import Account
 
+
 class Customer:
     """ Encapsulates customer information, accounts and services """
+
     def __init__(self, f_name, l_name, address, accounts=None, services=None):
         self.f_name = f_name
         self.l_name = l_name
@@ -15,8 +17,17 @@ class Customer:
         """ Return total worth of all accounts and services """
         if len(self.accounts) > 0 or len(self.services) > 0:
             accounts_total = sum([acct.balance for acct in self.accounts])
-            services_total = sum([service.balance for service in self.services])
+            services_total = sum(
+                [service.balance for service in self.services])
             return accounts_total + services_total
+        else:
+            return 0
+
+    @property
+    def total_limit(self):
+        """ Return total limit of all approved services """
+        if len(self.services) > 0:
+            return sum([service.limit for service in self.services if service.status == "approved"])
         else:
             return 0
 
@@ -40,5 +51,3 @@ class Customer:
             [Account.from_dict(account) for account in source["accounts"]],
             [Service.from_dict(service) for service in source["services"]]
         )
-
-

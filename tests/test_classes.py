@@ -223,6 +223,21 @@ class TestCustomer(unittest.TestCase):
         cust = Customer("Pat", "Sajak", "1 Wheel Way", [acct], [service])
         self.assertEqual(cust.total_balance, -100)
 
+    def test_total_limit(self):
+        acct = Account("checking", 0)
+        cust = Customer("Pat", "Sajak", "1 Wheel Way", [acct], [])
+        self.assertEqual(cust.total_limit, 0)
+        
+        acct = Account("checking", 0)
+        service = Service(100)
+        cust = Customer("Alex", "Trebek", "1 Jeopardy! Ave", [acct], [service])
+        self.assertEqual(cust.total_limit, 0)
+
+        acct = Account("checking", 100)
+        service = Service(100, status="approved")
+        cust = Customer("Steve", "Harvey", "1 Family Affiars Highway", [acct], [service])
+        self.assertEqual(cust.total_limit, 100)
+
 
     def test_to_dict(self):
         acct = Account("checking", 0)
